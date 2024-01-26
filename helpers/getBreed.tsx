@@ -1,5 +1,5 @@
 const getBreeds = async (): Promise<any> => {
-  const url: string = 'https://api.thedogapi.com/v1/images/search'
+  const url: string = 'https://api.thedogapi.com/v1/breeds'
   const res: Response = await fetch(url)
 
   if (!res.ok) {
@@ -8,7 +8,6 @@ const getBreeds = async (): Promise<any> => {
   }
 
   const breeds: any = await res.json()
-
   return breeds
 }
 

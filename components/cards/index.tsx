@@ -6,20 +6,46 @@ import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Collapse from '@mui/material/Collapse'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import getBreeds from '../../helpers/getBreed'
+import getDog from '../../helpers/getDog'
+import { info } from 'console'
 
-const url = 'https://api.thecatapi.com/v1/images/search?limit=3'
-const api_key = 'live_u4ssREEOK7ORyFd4mNg4NmzKxL5Jfeive2k2O9fjS9K15tT8PWXQnuOzaB52KtmV'
 const initialDog = [
   {
-    'id': 'hNa0pli30',
-    'url': 'https://cdn2.thedogapi.com/images/hNa0pli30.jpg',
-    'width': 1080,
-    'height': 1157
+    id: 'hNa0pli30',
+    url: 'https://cdn2.thedogapi.com/images/hNa0pli30.jpg',
+    width: 1080,
+    height: 1157
+  }
+]
+const initialInfoDog = [
+  {
+    id: 'sNtR0_fd',
+    url: 'https://cdn2.thedogapi.com/images/sNtR0_fdu.jpg',
+    breeds: [
+      {
+        weight: {
+          imperial: '35 - 65',
+          metric: '6 - 29'
+        },
+        height: {
+          imperial: '23 - 28',
+          metric: '58 - 71'
+        },
+        id: 213,
+        name: 'Saluki',
+        bred_for: 'Coursing gazelle and hare',
+        breed_group: 'Hound',
+        life_span: '12 - 14 years',
+        temperament: 'Aloof, Reserved, Intelligent, Quiet',
+        reference_image_id: 'fjFIuehNo'
+      }
+    ],
+    width: 734,
+    height: 668
   }
 ]
 
@@ -39,7 +65,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   })
 }))
 
-const DoCard: React.FC = () => {
+interface DoCardProps {
+  id: number | null
+  callback?(): void;
+  doggo?: object
+}
+
+const DoCard: React.FC<DoCardProps> = ({ id, callback, doggo }) => {
   const [expanded, setExpanded] = React.useState(false)
   const [clicked, setClicked] = React.useState(false)
   const handleExpandClick = (): void => {
@@ -50,64 +82,95 @@ const DoCard: React.FC = () => {
     setClicked(!clicked)
   }
   const [dog, setDog] = React.useState(initialDog)
+  const [infoDog, setInfoDog] = React.useState(initialInfoDog)
   const [error, setError] = React.useState('')
+  const [loading, setLoading] = React.useState(true)
+
   React.useEffect(() => {
-    updateBreeds()
+    const fetchData = async (): Promise<void> => {
+      try {
+        if (id === null) {
+          setLoading(true)
+          const newDog = await getDog(null, false)
+          setDog(newDog)
+
+          if (newDog?.[0].id) {
+            const infoDogResult = await getDog(newDog[0].id, false)
+            setInfoDog(infoDogResult)
+            if (!infoDogResult.breeds || infoDogResult.breeds.length === 0) {
+              await fetchData()
+            }
+          }
+        } else {
+          const infoDogResult = await getDog(doggo.id, false)
+          setInfoDog(infoDogResult)
+          console.log(infoDog)
+          if (!infoDogResult.breeds || infoDogResult.breeds.length === 0) {
+            await fetchData()
+          }
+        }
+      } catch (error) {
+        setError('Error al cargar las razas')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    void fetchData()
   }, [])
 
-  const updateBreeds = () => {
-    getBreeds()
-      .then((newDog) => {
-        setDog(newDog)
-      })
-      .catch((error) => {
-        console.log(error)
-        setError('Error al cargar las razas')
-      })
+  if (loading) {
+    return <div>Cargando...</div>
   }
 
+  if (error !== '') {
+    return <div>Error: {error}</div>
+  }
+  console.log(infoDog)
   return (
-    <Card sx={{ maxWidth: 345 }}>
-        <CardHeader
-          title="Lorem Ipsum"
-          subheader="01/24/24"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image={dog[0].url}
-          alt="Cat"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            Cat
-          </Typography>
-        </CardContent>
-        <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites" onClick={handleFavClick}>
-            <FavoriteIcon color={clicked ? 'error' : 'default'}/>
-          </IconButton>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+    <div>
+      <Card sx={{ maxWidth: 345 }}>
+          <CardHeader
+            title={infoDog.breeds === undefined ? 'No especificada' : infoDog.breeds[0].name}
+            subheader={infoDog.breeds === undefined ? 'No especificada' : infoDog.breeds[0].life_span}
+          />
+          <CardMedia
+            component="img"
+            height="194"
+            image={infoDog.url}
+            alt="Dog"
+          />
           <CardContent>
-            <Typography paragraph>Description:</Typography>
-            <Typography paragraph>
-              Cute cat
-            </Typography>
-            <Typography paragraph>
-              :3
+            <Typography variant="body2" color="text.secondary">
+              {infoDog.breeds === undefined ? 'No especificada' : infoDog.breeds[0].breed_group}
             </Typography>
           </CardContent>
-        </Collapse>
-    </Card>
+          <CardActions disableSpacing>
+            <IconButton aria-label="add to favorites" onClick={handleFavClick}>
+              <FavoriteIcon color={clicked ? 'error' : 'default'}/>
+            </IconButton>
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </ExpandMore>
+          </CardActions>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+              <Typography paragraph>Description:</Typography>
+              <Typography paragraph>
+                {infoDog.breeds === undefined ? 'No especificada' : infoDog.breeds[0].bred_for}
+              </Typography>
+              <Typography paragraph>
+                {infoDog.breeds === undefined ? 'No especificada' : infoDog.breeds[0].temperament}
+              </Typography>
+            </CardContent>
+          </Collapse>
+      </Card>
+    </div>
   )
 }
 

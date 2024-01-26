@@ -1,0 +1,59 @@
+$primary-color: #3498db;
+$success-color: #27ae60;
+
+.SimpleForm {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  background-color: #fff;
+
+  h1 {
+    color: $primary-color;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 10px;
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+    }
+
+    button {
+      background-color: $primary-color;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+  }
+
+  .success_message {
+    color: $success_color;
+    margin-top: 20px;
+    text-align: center; // Centrar horizontalmente
+    display: flex;
+    justify-content: center; // Centrar verticalmente
+    align-items: center; // Centrar verticalmente
+
+    strong {
+      margin: 0; // Eliminar el margen predeterminado del strong
+    }
+  }
+}

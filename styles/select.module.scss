@@ -1,0 +1,23 @@
+$select-border-color: #3498db;
+$select-focus-color: darken($select-border-color, 10%);
+$select-font-color: #333;
+$select-background-color: #fff;
+
+.Select {
+  width: 100%;
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid $select-border-color;
+        border-radius: 5px;
+        color: $select-font-color;
+        background-color: $select-background-color;
+        cursor: pointer;
+        outline: none;
+        margin-bottom: 25px;
+
+        &:focus {
+            border-color: $select-focus-color;
+        }
+    }
+}
