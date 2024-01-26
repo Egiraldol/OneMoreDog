@@ -1,5 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
-import { type NextPage } from 'next'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/header'
 import DoCard from '../components/cards'
 import styles from '../styles/index.module.scss'
@@ -40,17 +39,17 @@ function Index (): React.JSX.Element {
   console.log('filterDog', filterDog)
   return (
     <div className={styles.main}>
-      <Header />
+      <div className={styles.header}>
+        <Header />
+      </div>
       <div className={styles.cardContainer}>
         <DoCard id = {null}/>
         <DoCard id = {null}/>
         <DoCard id = {null}/>
         <DoCard id = {null}/>
       </div>
-      <div>
+      <div className={styles.selectContainer}>
         <Select updateDog={updateDog}/>
-      </div>
-      <div>
         {(breed !== null && filterDog !== undefined && filterDog.length !== 0) && <DoCard id = {filterDog[0].id} doggo={filterDog[0]} callback={updateDog}/>}
       </div>
     </div>
