@@ -24,8 +24,8 @@ const Header: React.FC<props> = () => {
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
               <Button color='inherit' onClick = {() => { movePage('/') }}>OneMoreDog</Button>
             </Typography>
-            <Button color='inherit' onClick = {() => { movePage('/contribute') }}>Contribuir</Button>
-            <Button color='inherit' onClick = {() => { movePage('/contact') }}>Contáctanos</Button>
+            <Button color='inherit' onClick = {() => { movePage('/about') }}>About Us</Button>
+            <Button color='inherit' onClick = {() => { movePage('/contact') }}>More Info</Button>
         </Toolbar>
     </AppBar>
   )

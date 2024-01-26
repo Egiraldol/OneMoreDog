@@ -1,0 +1,43 @@
+$primary-color: #3498db;
+$background-color: #f6fedf;
+$text-color: #333;
+$image-width: 500px;
+
+.container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.About {
+  background-color: $background-color;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+
+  h2 {
+    color: $primary-color;
+    margin-bottom: 20px;
+  }
+
+  img {
+    width: $image-width;
+    height: auto;
+    margin-right: 20px;
+  }
+
+  p {
+    color: $text-color;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    img {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
+}
